@@ -5,21 +5,21 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
+      
     - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-
+        
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install Flask pytest
-
+        
     - name: Create mock services for testing
       run: |
         # Создаем заглушки для сервисов если их нет
@@ -33,7 +33,7 @@ class PaymentError(Exception):
 class PaymentGateway:
     def process_payment(self, amount, card_token):
         return {"success": True, "transaction_id": "test_123"}
-
+    
     def validate_card(self, card_token):
         return len(card_token) > 0
 EOF
@@ -59,7 +59,7 @@ class PaymentProcessor:
         self.payment_gateway = payment_gateway
         self.email_service = email_service
         self.transactions = []
-
+    
     def make_payment(self, amount, card_token, user_email, description=""):
         result = self.payment_gateway.process_payment(amount, card_token)
         transaction = {
@@ -72,7 +72,7 @@ class PaymentProcessor:
         }
         self.transactions.append(transaction)
         return {**result, **transaction}
-
+    
     def get_transaction_by_id(self, transaction_id):
         return next((t for t in self.transactions if t['id'] == transaction_id), None)
 EOF
@@ -81,7 +81,7 @@ EOF
         if [ ! -f src/services/__init__.py ]; then
           touch src/services/__init__.py
         fi
-
+        
     - name: Run basic tests
       run: |
         # Создаем простой тест если нет
@@ -95,7 +95,7 @@ def test_health_check():
     import sys
     sys.path.append('src')
     from app import app
-
+    
     with app.test_client() as client:
         response = client.get('/api/health')
         assert response.status_code == 200
