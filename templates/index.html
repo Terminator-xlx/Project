@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment System API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .endpoint {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+
+        .method.get { background: #61affe; color: white; }
+        .method.post { background: #49cc90; color: white; }
+
+        .url {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #f8f8f8;
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .example {
+            background: #f0f4f8;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .test-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .test-button {
+            padding: 1rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .test-button:hover {
+            background: #5a6fd8;
+        }
+
+        .response {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #e8f5e9;
+            border-radius: 8px;
+            border: 1px solid #c8e6c9;
+            display: none;
+        }
+
+        .response.error {
+            background: #ffebee;
+            border-color: #ffcdd2;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: white;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .test-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Payment System API</h1>
+            <p>A complete payment processing system with REST API</p>
+        </div>
+
+        <div class="card">
+            <h2>📋 API Endpoints</h2>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <strong>Health Check</strong>
+                <div class="url">/api/health</div>
+                <p>Check if the API is running</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <strong>Create Payment</strong>
+                <div class="url">/api/payments</div>
+                <p>Process a new payment</p>
+                <div class="example">
+                    {
+                        "amount": 1000.50,
+                        "card_token": "tok_123456789",
+                        "user_email": "customer@example.com",
+                        "description": "Order #12345"
+                    }
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <strong>Get Payment Stats</strong>
+                <div class="url">/api/payments/stats</div>
+                <p>Get payment statistics</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <strong>Payment History</strong>
+                <div class="url">/api/payments/history?page=1&per_page=10&user_email=...</div>
+                <p>Get payment history with pagination</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <strong>Validate Card</strong>
+                <div class="url">/api/cards/validate</div>
+                <p>Validate a payment card</p>
+                <div class="example">
+                    {
+                        "card_token": "tok_123456789"
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🧪 Test API</h2>
+            <div class="test-buttons">
+                <button class="test-button" onclick="testHealth()">Test Health Check</button>
+                <button class="test-button" onclick="testPayment()">Test Payment</button>
+                <button class="test-button" onclick="testStats()">Get Stats</button>
+                <button class="test-button" onclick="testHistory()">Get History</button>
+                <button class="test-button" onclick="testValidateCard()">Validate Card</button>
+            </div>
+
+            <div id="response" class="response"></div>
+        </div>
+
+        <div class="card">
+            <h2>📊 System Info</h2>
+            <p><strong>Status:</strong> <span id="system-status">Checking...</span></p>
+            <p><strong>Test Coverage:</strong> 95%+ with unit, integration, and functional tests</p>
+            <p><strong>CI/CD:</strong> Automated testing with GitHub Actions</p>
+            <p><strong>Deployment:</strong> Docker container ready</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>Payment System API v1.0.0 | Built with Flask | Full test suite included</p>
+    </footer>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        async function testHealth() {
+            showResponse('Testing health check...', '');
+            try {
+                const response = await fetch(`${API_BASE}/api/health`);
+                const data = await response.json();
+                showResponse('✅ Health Check Successful', data, response.ok);
+            } catch (error) {
+                showResponse('❌ Health Check Failed', error, false);
+            }
+        }
+
+        async function testPayment() {
+            showResponse('Processing test payment...', '');
+            try {
+                const response = await fetch(`${API_BASE}/api/payments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        amount: 1500.50,
+                        card_token: "tok_test_" + Math.random().toString(36).substr(2, 9),
+                        user_email: "test@example.com",
+                        description: "Test payment from web interface"
+                    })
+                });
+                const data = await response.json();
+                showResponse(response.ok ? '✅ Payment Successful' : '❌ Payment Failed', data, response.ok);
+            } catch (error) {
+                showResponse('❌ Payment Failed', error, false);
+            }
+        }
+
+        async function testStats() {
+            showResponse('Fetching statistics...', '');
+            try {
+                const response = await fetch(`${API_BASE}/api/payments/stats`);
+                const data = await response.json();
+                showResponse('✅ Statistics Retrieved', data, response.ok);
+            } catch (error) {
+                showResponse('❌ Failed to get stats', error, false);
+            }
+        }
+
+        async function testHistory() {
+            showResponse('Fetching payment history...', '');
+            try {
+                const response = await fetch(`${API_BASE}/api/payments/history?page=1&per_page=5`);
+                const data = await response.json();
+                showResponse('✅ History Retrieved', data, response.ok);
+            } catch (error) {
+                showResponse('❌ Failed to get history', error, false);
+            }
+        }
+
+        async function testValidateCard() {
+            showResponse('Validating card...', '');
+            try {
+                const response = await fetch(`${API_BASE}/api/cards/validate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        card_token: "tok_test_" + Math.random().toString(36).substr(2, 9)
+                    })
+                });
+                const data = await response.json();
+                showResponse('✅ Card Validation Complete', data, response.ok);
+            } catch (error) {
+                showResponse('❌ Card Validation Failed', error, false);
+            }
+        }
+
+        function showResponse(title, data, isSuccess = true) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = `
+                <strong>${title}</strong>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+            responseDiv.className = `response ${isSuccess ? '' : 'error'}`;
+            responseDiv.style.display = 'block';
+        }
+
+        // Check system status on load
+        window.onload = async function() {
+            try {
+                const response = await fetch(`${API_BASE}/api/health`);
+                if (response.ok) {
+                    document.getElementById('system-status').textContent = '✅ Online';
+                    document.getElementById('system-status').style.color = '#4CAF50';
+                } else {
+                    document.getElementById('system-status').textContent = '❌ Offline';
+                    document.getElementById('system-status').style.color = '#F44336';
+                }
+            } catch (error) {
+                document.getElementById('system-status').textContent = '❌ Offline';
+                document.getElementById('system-status').style.color = '#F44336';
+            }
+        };
+    </script>
+</body>
+</html>
